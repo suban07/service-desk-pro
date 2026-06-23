@@ -160,9 +160,9 @@ public class TicketService {
                 ticket.getStatus(),
                 ticket.getCreatedAt(),
                 ticket.getUpdatedAt(),
-                ticket.getCreatedBy().getId(),
+                ticket.getCreatedBy() != null ? ticket.getCreatedBy().getId() : null,
                 ticket.getCreatedBy() != null ? ticket.getCreatedBy().getName() : null,
-                ticket.getAssignedTo().getId(),
+                ticket.getAssignedTo() != null ? ticket.getAssignedTo().getId() : null,
                 ticket.getAssignedTo() != null ? ticket.getAssignedTo().getName() : null
         );
     }
