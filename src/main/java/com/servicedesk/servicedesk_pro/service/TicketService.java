@@ -35,7 +35,9 @@ public class TicketService {
     public TicketResponse createTicket(CreateTicketRequest request)  {
         User createdBy = userRepository.findById(request.createdById())
                         .orElseThrow(()->new UserNotFoundException("User Not Found"));
-
+        if(createdBy.getRole()!=UserRole.CUSTOMER){
+            throw new RuntimeException("Only Customer can create tickets");
+        }
         Ticket ticket = new Ticket();
         ticket.setTitle(request.title());
         ticket.setDescription(request.description());

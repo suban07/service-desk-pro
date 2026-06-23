@@ -116,7 +116,7 @@ Ticket Closed
 
 ## Architecture
 
-
+```text
 Client (Postman / Swagger / Frontend)
                 │
                 ▼
@@ -130,49 +130,32 @@ Client (Postman / Swagger / Frontend)
                 │
                 ▼
              MySQL Database
+```
 
 
 ------------------------------------------------------------------------------------------------
 
 ## Project Structure
 
+```text
 src/main/java/com/servicedesk/servicedesk_pro
 
 ├── controller
-│
 ├── service
-│
 ├── repository
-│
 ├── model
-│
 ├── dto
-│
 ├── enums
-│
 ├── exception
-│
 ├── config
-│
 └── ServiceDeskProApplication.java
+```
 
 --------------------------------------------------------------------------------------------
 
-## Entity Relationship Overview
+## Entity Relationship Diagram
 
-User
- │
- ├───────────────┐
- │               │
- ▼               ▼
-Created By   Assigned To
- │               │
- └────── Ticket ─┘
-          │
-          ├────── Comment
-          │
-          └────── Resolution
-
+![ER Diagram](screenshots/er-diagram.png)
 ------------------------------------------------------------------------------------------------
 
 ## Database Entities
