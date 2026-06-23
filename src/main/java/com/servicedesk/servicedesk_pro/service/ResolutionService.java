@@ -40,6 +40,11 @@ public class ResolutionService {
             throw new RuntimeException("Resolved by only SUPPORT_ENGINEER");
         }
 
+        if (ticket.getAssignedTo() == null ||
+                !ticket.getAssignedTo().getId().equals(user.getId())) {
+            throw new RuntimeException("Only assigned engineer can resolve this ticket");
+        }
+
         Resolution resolution = new Resolution();
         resolution.setTicket(ticket);
         resolution.setSolution(request.solution());

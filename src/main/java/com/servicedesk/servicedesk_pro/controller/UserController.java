@@ -1,6 +1,7 @@
 package com.servicedesk.servicedesk_pro.controller;
 
 import com.servicedesk.servicedesk_pro.dto.CreateUserRequest;
+import com.servicedesk.servicedesk_pro.dto.UpdateUserRequest;
 import com.servicedesk.servicedesk_pro.dto.UserResponse;
 import com.servicedesk.servicedesk_pro.model.User;
 import com.servicedesk.servicedesk_pro.service.UserService;
@@ -27,5 +28,21 @@ public class UserController {
     @GetMapping
     public List<UserResponse> getAllUsers(){
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/{userId}")
+    public UserResponse getUserById(@PathVariable Long userId) {
+        return userService.getUserById(userId);
+    }
+
+    @PutMapping("/{userId}")
+    public UserResponse updateUser(@PathVariable Long userId,
+                                   @RequestBody UpdateUserRequest request) {
+        return userService.updateUser(userId, request);
+    }
+
+    @DeleteMapping("/{userId}")
+    public String deleteUser(@PathVariable Long userId) {
+        return userService.deleteUser(userId);
     }
 }

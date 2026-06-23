@@ -88,11 +88,43 @@ Ticket Closed
 
 -------------------------------------------------------------------------------------------------
 
+## Business Rules
+
+The application enforces the following workflow rules:
+
+### Ticket Creation
+
+- Only users with the `CUSTOMER` role can create tickets.
+
+### Ticket Assignment
+
+- Tickets can only be assigned to users with the `SUPPORT_ENGINEER` role.
+- Only tickets in the `OPEN` state can be assigned.
+
+### Ticket Status Updates
+
+- Only the assigned support engineer can update the ticket status.
+
+### Ticket Resolution
+
+- Only the assigned support engineer can add a resolution.
+- Adding a resolution automatically updates the ticket status to `RESOLVED`.
+
+### Ticket Closure
+
+- Only tickets in the `RESOLVED` state can be closed.
+
+### User Constraints
+
+- User email addresses must be unique across the system.
+
+-------------------------------------------------------------------------------------------------
+
 ## Tech Stack
 
 ### Backend
 
-* Java 17
+* Java 21
 * Spring Boot
 * Spring Web
 * Spring Data JPA
@@ -104,8 +136,8 @@ Ticket Closed
 
 ### Documentation & Testing
 
-* Swagger / OpenAPI
 * Postman
+* Swagger / OpenAPI
 
 ### Utilities
 
@@ -131,8 +163,6 @@ Client (Postman / Swagger / Frontend)
                 ▼
              MySQL Database
 ```
-
-
 ------------------------------------------------------------------------------------------------
 
 ## Project Structure
@@ -224,6 +254,9 @@ CLOSED
 
 * Create User
 * Get All Users
+* Get User BY ID
+* Update User
+* Delete User
 
 ### Ticket Management
 
@@ -233,6 +266,7 @@ CLOSED
 * Assign Ticket
 * Update Ticket Status
 * Close Ticket
+* Delete Ticket
 
 ### Comment Management
 
@@ -276,10 +310,13 @@ CLOSED
 
 ### User APIs
 
-| Method | Endpoint   |
-| ------ | ---------- |
-| POST   | /api/users |
-| GET    | /api/users |
+| Method   | Endpoint            |
+|----------|-------------------- |
+| POST     | /api/users          |
+| GET      | /api/users          |
+| GET      | /api/users/{userId} |
+| PUT      | /api/users/{userId} |
+| DELETE   | /api/users/{userId} |
 
 ### Ticket APIs
 
@@ -408,7 +445,8 @@ http://localhost:8080/swagger-ui/index.html
 
 ### Swagger Documentation
 
-![Swagger UI](screenshots/swagger-home.png)
+![Swagger UI](screenshots/swagger-home1.png)
+![Swagger UI](screenshots/swagger-home2.png)
 
 ### Ticket Creation API
 
@@ -438,7 +476,7 @@ http://localhost:8080/swagger-ui/index.html
 ### Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/service-desk-pro.git
+git clone https://github.com/suban07/service-desk-pro.git
 ```
 
 ### Create Database

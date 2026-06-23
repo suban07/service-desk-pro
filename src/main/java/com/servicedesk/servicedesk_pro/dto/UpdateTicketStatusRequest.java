@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 
 public record UpdateTicketStatusRequest(
         @NotNull(message = "status message is required")
-        TicketStatus status
+        TicketStatus status,
+         @NotNull(message = "must provide id of Updating user")
+         Long updatedById
 ) {
 }

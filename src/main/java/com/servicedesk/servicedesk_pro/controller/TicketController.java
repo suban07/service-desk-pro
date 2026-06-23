@@ -97,4 +97,9 @@ public class TicketController {
         return ticketService.getTicketsWithPaginationAndSorting(
                 page, size, sortBy, direction);
     }
+
+    @DeleteMapping("/{ticketId}")
+    public String deleteTicket(@PathVariable Long ticketId) {
+        return ticketService.deleteTicket(ticketId);
+    }
 }

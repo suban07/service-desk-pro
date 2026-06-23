@@ -66,6 +66,10 @@ public class TicketService {
             throw new RuntimeException("Ticket can be assigned to only SUPPORT_ENGINEER");
         }
 
+        if (ticket.getStatus() != TicketStatus.OPEN) {
+            throw new RuntimeException("Only OPEN tickets can be assigned");
+        }
+
         ticket.setAssignedTo(engineer);
         ticket.setStatus(TicketStatus.ASSIGNED);
         ticket.setUpdatedAt(LocalDateTime.now());
@@ -75,10 +79,32 @@ public class TicketService {
 
 
     public TicketResponse updateTicketStatus(Long ticketId, UpdateTicketStatusRequest request) {
+        User user = userRepository.findById(request.updatedById())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+
+
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(()->new TicketNotFoundException("Ticket not found"));
+
+        if(ticket.getAssignedTo() == null){
+            throw new RuntimeException("Ticket is not assigned");
+        }
+
+        if(!ticket.getAssignedTo().getId().equals(user.getId())){
+            throw new RuntimeException(
+                    "Only assigned engineer can update ticket status");
+        }
+
+        if(user.getRole() != UserRole.SUPPORT_ENGINEER){
+            throw new RuntimeException(
+                    "Only SUPPORT_ENGINEER can update ticket status");
+        }
+
         ticket.setStatus(request.status());
         ticket.setUpdatedAt(LocalDateTime.now());
+
+
 
         return mapToTicketResponse(ticketRepository.save(ticket));
     }
@@ -151,6 +177,15 @@ public class TicketService {
         Page<Ticket> ticketPage = ticketRepository.findAll(pageable);
 
         return ticketPage.map(this::mapToTicketResponse);
+    }
+
+
+    public String deleteTicket(Long ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
+
+        ticketRepository.delete(ticket);
+        return "Ticket deleted successfully";
     }
 
     private TicketResponse mapToTicketResponse(Ticket ticket){

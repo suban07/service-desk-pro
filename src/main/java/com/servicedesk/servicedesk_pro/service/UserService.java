@@ -1,7 +1,9 @@
 package com.servicedesk.servicedesk_pro.service;
 
 import com.servicedesk.servicedesk_pro.dto.CreateUserRequest;
+import com.servicedesk.servicedesk_pro.dto.UpdateUserRequest;
 import com.servicedesk.servicedesk_pro.dto.UserResponse;
+import com.servicedesk.servicedesk_pro.exception.UserNotFoundException;
 import com.servicedesk.servicedesk_pro.model.User;
 import com.servicedesk.servicedesk_pro.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,33 @@ public class UserService {
                 .stream()
                 .map(this::mapToUserResponse)
                 .collect(Collectors.toList());
+    }
+
+    public UserResponse getUserById(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        return mapToUserResponse(user);
+    }
+
+    public UserResponse updateUser(Long userId, UpdateUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        user.setName(request.name());
+        user.setEmail(request.email());
+        user.setRole(request.role());
+
+        return mapToUserResponse(userRepository.save(user));
+    }
+
+    public String deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        userRepository.delete(user);
+        return "User deleted successfully";
     }
 
     private UserResponse mapToUserResponse(User user){
