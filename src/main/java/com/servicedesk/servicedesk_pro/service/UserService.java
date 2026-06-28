@@ -5,6 +5,7 @@ import com.servicedesk.servicedesk_pro.dto.UpdateUserRequest;
 import com.servicedesk.servicedesk_pro.dto.UserResponse;
 import com.servicedesk.servicedesk_pro.exception.UserNotFoundException;
 import com.servicedesk.servicedesk_pro.model.User;
+import com.servicedesk.servicedesk_pro.repository.TicketRepository;
 import com.servicedesk.servicedesk_pro.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,11 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final TicketRepository ticketRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, TicketRepository ticketRepository) {
         this.userRepository = userRepository;
+        this.ticketRepository = ticketRepository;
     }
 
     public UserResponse createUser(CreateUserRequest request){
@@ -55,6 +58,11 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
+        if (!user.getEmail().equals(request.email())
+                && userRepository.existsByEmail(request.email())) {
+            throw new RuntimeException("Email already exists");
+        }
+
         user.setName(request.name());
         user.setEmail(request.email());
         user.setRole(request.role());
@@ -65,6 +73,16 @@ public class UserService {
     public String deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if(ticketRepository.existsByCreatedById(userId)){
+            throw new RuntimeException(
+                    "Cannot delete user because tickets are associated with this user");
+        }
+
+        if(ticketRepository.existsByAssignedToId(userId)){
+            throw new RuntimeException(
+                    "Cannot delete user because tickets are assigned to this user");
+        }
 
         userRepository.delete(user);
         return "User deleted successfully";

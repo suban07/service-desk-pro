@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ServiceDesk Pro</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+    <h1>ServiceDesk Pro</h1>
+    <p>Issue Resolution & Workflow Management Platform</p>
+</header>
+
+<nav>
+    <a href="index.html">Dashboard</a>
+    <a href="users.html">Users</a>
+    <a href="tickets.html">Tickets</a>
+    <a href="ticket-details.html">Ticket Details</a>
+</nav>
+
+<main>
+
+    <section class="hero">
+        <h2>Welcome to ServiceDesk Pro</h2>
+        <p>
+            Manage customer issues, assign tickets to engineers,
+            track progress, add comments, and resolve tickets.
+        </p>
+    </section>
+
+    <section class="dashboard-stats">
+
+        <div class="stat-card">
+            <h3>Total Users</h3>
+            <p id="totalUsersCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Total Tickets</h3>
+            <p id="totalTicketsCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Open Tickets</h3>
+            <p id="openTicketsCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Resolved Tickets</h3>
+            <p id="resolvedTicketsCount">0</p>
+        </div>
+
+    </section>
+
+    <section class="cards">
+
+        <div class="card">
+            <h3>User Management</h3>
+            <p>Create, update, delete and manage users.</p>
+            <a href="users.html">Open Users</a>
+        </div>
+
+        <div class="card">
+            <h3>Ticket Management</h3>
+            <p>Create, assign, update, filter and close tickets.</p>
+            <a href="tickets.html">Open Tickets</a>
+        </div>
+
+        <div class="card">
+            <h3>Resolution Center</h3>
+            <p>Manage comments and ticket resolutions.</p>
+            <a href="ticket-details.html">Open Details</a>
+        </div>
+
+    </section>
+
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>

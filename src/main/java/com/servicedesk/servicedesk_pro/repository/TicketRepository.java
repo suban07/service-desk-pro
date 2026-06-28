@@ -12,4 +12,8 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
     List<Ticket> findByPriority(TicketPriority priority);
     List<Ticket> findByAssignedToId(Long Id);
     List<Ticket> findByCreatedById(Long Id);
+
+    boolean existsByCreatedById(Long userId);
+
+    boolean existsByAssignedToId(Long userId);
 }

@@ -70,6 +70,10 @@ public class TicketService {
             throw new RuntimeException("Only OPEN tickets can be assigned");
         }
 
+        if (ticket.getStatus() == TicketStatus.ASSIGNED) {
+            throw new RuntimeException("Ticket is already assigned");
+        }
+
         ticket.setAssignedTo(engineer);
         ticket.setStatus(TicketStatus.ASSIGNED);
         ticket.setUpdatedAt(LocalDateTime.now());
@@ -101,6 +105,9 @@ public class TicketService {
                     "Only SUPPORT_ENGINEER can update ticket status");
         }
 
+        if(ticket.getStatus()==TicketStatus.CLOSED){
+            throw new RuntimeException("Cannot update status because the ticket is closed");
+        }
         ticket.setStatus(request.status());
         ticket.setUpdatedAt(LocalDateTime.now());
 
@@ -115,12 +122,19 @@ public class TicketService {
     }
 
 
-    public TicketResponse closeTicket(Long ticketId) throws TicketNotFoundException {
+    public TicketResponse closeTicket(Long ticketId) {
+
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(()->new TicketNotFoundException("Ticket Not found"));
-        if(ticket.getStatus() != TicketStatus.RESOLVED){
-            throw new RuntimeException("Only resolved tickets can be closed");
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
+
+        if (ticket.getStatus() == TicketStatus.CLOSED) {
+            throw new RuntimeException("Ticket is already closed");
         }
+
+        if (ticket.getStatus() != TicketStatus.RESOLVED) {
+            throw new RuntimeException("Only RESOLVED tickets can be closed");
+        }
+
         ticket.setStatus(TicketStatus.CLOSED);
         ticket.setUpdatedAt(LocalDateTime.now());
 
@@ -180,13 +194,6 @@ public class TicketService {
     }
 
 
-    public String deleteTicket(Long ticketId) {
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
-
-        ticketRepository.delete(ticket);
-        return "Ticket deleted successfully";
-    }
 
     private TicketResponse mapToTicketResponse(Ticket ticket){
         return new TicketResponse(

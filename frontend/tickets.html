@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket Management</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+    <h1>ServiceDesk Pro</h1>
+</header>
+
+<nav>
+    <a href="index.html">Dashboard</a>
+    <a href="users.html">Users</a>
+    <a href="tickets.html">Tickets</a>
+    <a href="ticket-details.html">Ticket Details</a>
+</nav>
+
+<h2 style="text-align:center; margin-top:20px;">Ticket Management</h2>
+
+<form id="ticketForm">
+    <h3>Create Ticket</h3>
+
+    <input type="text" id="title" placeholder="Ticket Title" required>
+    <input type="text" id="description" placeholder="Description" required>
+
+ <select id="priority" required>
+    <option value="" selected disabled>Select Priority</option>
+    <option value="LOW">LOW</option>
+    <option value="MEDIUM">MEDIUM</option>
+    <option value="HIGH">HIGH</option>
+</select>
+
+    <input type="number" id="createdById" placeholder="Customer ID" required>
+
+    <button type="submit" class="btn-success">Create Ticket</button>
+</form>
+
+<div id="message"></div>
+
+<div class="action-panel">
+
+    <button class="btn-view" onclick="showAllTickets()">Get All Tickets</button>
+    <button class="btn-assign" onclick="showAssignForm()">Assign Ticket</button>
+    <button class="btn-update" onclick="showStatusForm()">Update Status</button>
+    <button class="btn-close" onclick="showCloseForm()">Close Ticket</button>
+    <button class="btn-view" onclick="showFilterOptions()">Filter Tickets</button>
+    <button class="btn-view" onclick="showPaginationForm()">Paginated View</button>
+
+</div>
+
+<div id="contentArea"></div>
+
+<script src="js/api.js"></script>
+<script src="js/tickets.js"></script>
+
+</body>
+</html>

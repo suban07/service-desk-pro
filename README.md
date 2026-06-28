@@ -10,16 +10,19 @@ The project was developed to simulate a real-world service desk environment and 
 
 ## Highlights
 
-* Built using Java 21, Spring Boot, Spring Data JPA, and MySQL
-* Implemented layered architecture (Controller → Service → Repository)
-* Designed RESTful APIs for complete ticket lifecycle management
-* Used DTO pattern for request and response handling
-* Added Bean Validation for request validation
-* Implemented Global Exception Handling
-* Added filtering APIs for status, priority, engineer, and customer
-* Implemented pagination and sorting
-* Integrated Swagger/OpenAPI documentation
-* Followed clean architecture and separation of concerns principles
+* Built a full-stack service desk application using Java, Spring Boot, MySQL, and HTML/CSS/JavaScript
+* Implemented layered backend architecture: Controller → Service → Repository
+* Designed RESTful APIs for user, ticket, comment, and resolution management
+* Used DTOs for clean request and response handling
+* Added role-based business rules for customers, support engineers, and managers
+* Implemented ticket workflow: OPEN → ASSIGNED → IN_PROGRESS → RESOLVED → CLOSED
+* Added validation, custom exceptions, and global exception handling
+* Implemented filtering by status, priority, assigned engineer, and customer
+* Added pagination and dynamic sorting for tickets
+* Integrated Swagger/OpenAPI for API testing and documentation
+* Built a lightweight frontend using HTML, CSS, and Vanilla JavaScript
+* Connected frontend pages to Spring Boot APIs using Fetch API
+* Added dashboard statistics, status badges, priority badges, and responsive UI styling
 
 ---------------------------------------------------------------------------------------------
 
@@ -72,51 +75,77 @@ Ticket Closed
 * Create tickets
 * View ticket details
 * Track ticket progress
+* Add comments to their own assigned or in-progress tickets
 
 ### SUPPORT_ENGINEER
 
 * Work on assigned tickets
 * Update ticket status
-* Add comments
-* Add resolutions
+* Add comments to assigned tickets
+* Add resolutions to assigned tickets
+* Resolve customer issues
 
 ### MANAGER
 
 * Assign tickets to support engineers
 * Monitor ticket progress
-* Oversee ticket workflow
+* Oversee ticket workflow and issue resolution
+
 
 -------------------------------------------------------------------------------------------------
 
 ## Business Rules
 
-The application enforces the following workflow rules:
+The application enforces the following workflow and validation rules:
+
+### User Rules
+
+* User email addresses must be unique across the system.
+* A user cannot be deleted if tickets are created by that user.
+* A user cannot be deleted if tickets are assigned to that user.
 
 ### Ticket Creation
 
-- Only users with the `CUSTOMER` role can create tickets.
+* Only users with the `CUSTOMER` role can create tickets.
+* Newly created tickets are assigned the `OPEN` status by default.
 
 ### Ticket Assignment
 
-- Tickets can only be assigned to users with the `SUPPORT_ENGINEER` role.
-- Only tickets in the `OPEN` state can be assigned.
+* Tickets can only be assigned to users with the `SUPPORT_ENGINEER` role.
+* Only tickets in the `OPEN` state can be assigned.
+* Assigned tickets automatically move to the `ASSIGNED` state.
 
 ### Ticket Status Updates
 
-- Only the assigned support engineer can update the ticket status.
+* Only the assigned support engineer can update the ticket status.
+* Ticket status cannot be updated if the ticket is already `CLOSED`.
+* Tickets must be assigned before their status can be updated.
+
+### Ticket Comments
+
+* Comments can only be added to tickets in the `ASSIGNED` or `IN_PROGRESS` state.
+* Only the assigned support engineer and the customer who created the ticket can add comments.
+* Comments cannot be added to `RESOLVED` tickets.
+* Comments cannot be added to `CLOSED` tickets.
 
 ### Ticket Resolution
 
-- Only the assigned support engineer can add a resolution.
-- Adding a resolution automatically updates the ticket status to `RESOLVED`.
+* Only users with the `SUPPORT_ENGINEER` role can add resolutions.
+* Only the assigned support engineer can resolve a ticket.
+* A ticket can have only one resolution.
+* Only tickets in the `ASSIGNED` or `IN_PROGRESS` state can be resolved.
+* Closed tickets cannot be resolved.
+* Adding a resolution automatically updates the ticket status to `RESOLVED`.
 
 ### Ticket Closure
 
-- Only tickets in the `RESOLVED` state can be closed.
+* Only tickets in the `RESOLVED` state can be closed.
+* A ticket cannot be closed more than once.
 
-### User Constraints
+### Error Handling
 
-- User email addresses must be unique across the system.
+* Invalid user, ticket, or resolution requests return meaningful error messages through custom exception handling.
+* Global exception handling provides consistent API error responses.
 
 -------------------------------------------------------------------------------------------------
 
@@ -128,21 +157,35 @@ The application enforces the following workflow rules:
 * Spring Boot
 * Spring Web
 * Spring Data JPA
-* Hibernate
+* Hibernate ORM
 
 ### Database
 
 * MySQL
 
+### Frontend
+
+* HTML5
+* CSS3
+* Vanilla JavaScript
+* Fetch API
+
 ### Documentation & Testing
 
-* Postman
 * Swagger / OpenAPI
+* Postman
+
+### Development Tools
+
+* IntelliJ IDEA
+* MySQL Workbench
+* Git & GitHub
 
 ### Utilities
 
 * Lombok
-* Jakarta Validation
+* Jakarta Bean Validation
+
 
 -----------------------------------------------------------------------------------------------
 
@@ -168,64 +211,82 @@ Client (Postman / Swagger / Frontend)
 ## Project Structure
 
 ```text
-src/main/java/com/servicedesk/servicedesk_pro
+servicedesk-pro
 
-├── controller
-├── service
-├── repository
-├── model
-├── dto
-├── enums
-├── exception
-├── config
-└── ServiceDeskProApplication.java
+├── frontend
+│   ├── index.html
+│   ├── users.html
+│   ├── tickets.html
+│   ├── ticket-details.html
+│   │
+│   ├── css
+│   │   └── style.css
+│   │
+│   └── js
+│       ├── api.js
+│       ├── dashboard.js
+│       ├── users.js
+│       ├── tickets.js
+│       └── ticket-details.js
+│
+├── src/main/java/com/servicedesk/servicedesk_pro
+│   ├── controller
+│   ├── service
+│   ├── repository
+│   ├── model
+│   ├── dto
+│   ├── enums
+│   ├── exception
+│   ├── config
+│   └── ServicedeskProApplication.java
+│
+├── screenshots
+│
+└── src/main/resources
+    └── application.properties
 ```
 
---------------------------------------------------------------------------------------------
 
-## Entity Relationship Diagram
-
-![ER Diagram](screenshots/er-diagram.png)
 ------------------------------------------------------------------------------------------------
 
 ## Database Entities
 
 ### User
 
-id
-name
-email
-role
-createdAt
+-id
+-name
+-email
+-role
+-createdAt
 
 ### Ticket
 
-id
-title
-description
-priority
-status
-createdAt
-updatedAt
-createdBy
-assignedTo
+-id
+-title
+-description
+-priority
+-status
+-createdAt
+-updatedAt
+-createdBy
+-assignedTo
 
 ### Comment
 
-id
-message
-createdAt
-ticket
-commentedBy
+-id
+-message
+-createdAt
+-ticket
+-commentedBy
 
 ### Resolution
 
-id
-rootCause
-solution
-resolvedAt
-ticket
-resolvedBy
+-id
+-rootCause
+-solution
+-resolvedAt
+-ticket
+-resolvedBy
 
 
 -----------------------------------------------------------------------------------------------
@@ -254,7 +315,7 @@ CLOSED
 
 * Create User
 * Get All Users
-* Get User BY ID
+* Get User By ID
 * Update User
 * Delete User
 
@@ -266,7 +327,6 @@ CLOSED
 * Assign Ticket
 * Update Ticket Status
 * Close Ticket
-* Delete Ticket
 
 ### Comment Management
 
@@ -278,31 +338,61 @@ CLOSED
 * Add Resolution
 * Get Resolution By Ticket
 
-### Validation
-
-* Required field validation
-* Email validation
-* Null checks
-
-### Exception Handling
-
-* User Not Found
-* Ticket Not Found
-* Resolution Not Found
-* Validation Exceptions
-
 ### Filtering
 
-* Filter by Status
-* Filter by Priority
-* Filter by Assigned Engineer
-* Filter by Customer
+* Filter Tickets by Status
+* Filter Tickets by Priority
+* Filter Tickets by Assigned Engineer
+* Filter Tickets by Customer
 
 ### Pagination & Sorting
 
-* Page-wise retrieval
-* Dynamic sorting
-* Configurable page size
+* Pagination Support
+* Dynamic Sorting
+* Configurable Page Size
+
+### Validation & Exception Handling
+
+* DTO-based Request/Response Handling
+* Bean Validation
+* Global Exception Handling
+* Custom Exception Classes
+
+### Frontend UI
+
+* Dashboard Page
+* User Management Page
+* Ticket Management Page
+* Ticket Details Page
+* Status Badges
+* Priority Badges
+* Color-Coded Action Buttons
+* Responsive Layout
+* Fetch API Integration
+
+
+
+--------------------------------------------------------------------------------------------
+
+## Frontend UI
+
+The project includes a lightweight frontend built using HTML, CSS, and Vanilla JavaScript. The frontend communicates with the Spring Boot backend using the Fetch API.
+
+### Frontend Pages
+
+* Dashboard page with live statistics
+* User Management page for creating, viewing, updating, and deleting users
+* Ticket Management page for creating, assigning, updating, closing, filtering, and paginating tickets
+* Ticket Details page for viewing ticket details, adding comments, viewing comments, adding resolutions, and viewing resolutions
+
+### UI Enhancements
+
+* Dashboard statistics cards
+* Status badges for ticket status
+* Priority badges for ticket priority
+* Color-coded action buttons
+* Responsive layout
+* Dynamic forms and tables using JavaScript
 
 --------------------------------------------------------------------------------------------
 
@@ -443,6 +533,22 @@ http://localhost:8080/swagger-ui/index.html
 
 ## Screenshots
 
+### Frontend Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+### User Management UI
+
+![User Management](screenshots/users-ui.png)
+
+### Ticket Management UI
+
+![Ticket Management](screenshots/tickets-ui.png)
+
+### Ticket Details & Resolution UI
+
+![Ticket Details](screenshots/ticket-details-ui.png)
+
 ### Swagger Documentation
 
 ![Swagger UI](screenshots/swagger-home1.png)
@@ -464,39 +570,110 @@ http://localhost:8080/swagger-ui/index.html
 
 ![Pagination](screenshots/pagination-sorting-api.png)
 
+### Entity Relationship Diagram
+
+![ER Diagram](screenshots/er-diagram.png)
+
 ### Database Schema
 
 ![Database Tables](screenshots/database-tables.png)
-
 
 -----------------------------------------------------------------------------------------------
 
 ## How to Run
 
-### Clone Repository
+### Prerequisites
+
+Ensure the following software is installed on your system:
+
+* Java 21
+* MySQL
+* Maven
+
+For frontend development:
+
+* A modern web browser
+* VS Code Live Server extension (optional but recommended)
+
+---
+
+### Clone the Repository
 
 ```bash
 git clone https://github.com/suban07/service-desk-pro.git
+cd service-desk-pro
 ```
 
-### Create Database
+---
+
+### Create the Database
+
+Create a MySQL database:
 
 ```sql
 CREATE DATABASE servicedesk_db;
 ```
 
-### Configure application.properties
+---
+
+### Configure Database Connection
+
+Open:
+
+```text
+src/main/resources/application.properties
+```
+
+Update the database configuration:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/servicedesk_db
-spring.datasource.username=YOUR_USERNAME
-spring.datasource.password=YOUR_PASSWORD
+spring.datasource.username=root (or your user name if have)
+spring.datasource.password=your_password
 
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 ```
 
-### Run Application
+---
+
+### Run Backend Using IntelliJ IDEA
+
+1. Open the project in IntelliJ IDEA.
+2. Wait for Maven dependencies to download.
+3. Navigate to:
+
+```text
+src/main/java/com/servicedesk/servicedesk_pro/ServicedeskProApplication.java
+```
+
+4. Right-click `ServicedeskProApplication.java`.
+5. Select:
+
+```text
+Run 'ServicedeskProApplication'
+```
+
+The backend server will start at:
+
+```text
+http://localhost:8080
+```
+
+---
+
+### Run Backend Using VS Code
+
+#### Required Extensions
+
+Install the following VS Code extensions:
+
+* Extension Pack for Java
+* Spring Boot Extension Pack
+
+Open the project folder in VS Code.
+
+Ensure the terminal is opened in the project root directory where `pom.xml` is located.
 
 Run:
 
@@ -504,9 +681,55 @@ Run:
 mvn spring-boot:run
 ```
 
-### Open Swagger
+If Maven is not installed globally, use the Maven Wrapper:
 
+```bash
+.\mvnw spring-boot:run
+```
+
+The backend server will start at:
+
+```text
+http://localhost:8080
+```
+
+---
+
+### Access Swagger Documentation
+
+After starting the backend, open:
+
+```text
 http://localhost:8080/swagger-ui/index.html
+```
+
+---
+
+### Run the Frontend
+
+Ensure the Spring Boot backend is running first.
+
+Open:
+
+```text
+frontend/index.html
+```
+
+You may open the file directly in a browser.
+
+Recommended approach:
+
+1. Open the project in VS Code.
+2. Install the Live Server extension.
+3. Right-click `frontend/index.html`.
+4. Select **Open with Live Server**.
+
+The frontend communicates with the backend using:
+
+```javascript
+const API_BASE_URL = "http://localhost:8080";
+```
+
 
 
 --------------------------------------------------------------------------------------------
@@ -521,3 +744,7 @@ SASTRA Deemed University
 - Email: 227003171@sastra.ac.in
 - LinkedIn: https://www.linkedin.com/in/dudekula-abdul-suban-5b906b329/
 - GitHub: https://github.com/suban07
+
+## Repository
+
+GitHub: https://github.com/suban07/service-desk-pro

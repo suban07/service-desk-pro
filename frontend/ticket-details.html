@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Details</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+    <h1>ServiceDesk Pro</h1>
+</header>
+
+<nav>
+    <a href="index.html">Dashboard</a>
+    <a href="users.html">Users</a>
+    <a href="tickets.html">Tickets</a>
+    <a href="ticket-details.html">Ticket Details</a>
+</nav>
+
+<h2 style="text-align:center; margin-top:20px;">
+    Ticket Details & Resolution Center
+</h2>
+
+<div id="message"></div>
+
+<div class="action-panel">
+
+    <button class="btn-view" onclick="showTicketByIdForm()">Get Ticket By ID</button>
+    <button class="btn-update" onclick="showAddCommentForm()">Add Comment</button>
+    <button class="btn-view" onclick="showCommentsForm()">Get Comments</button>
+    <button class="btn-success" onclick="showAddResolutionForm()">Add Resolution</button>
+    <button class="btn-view" onclick="showResolutionForm()">Get Resolution</button>
+
+</div>
+
+<div id="contentArea"></div>
+
+<script src="js/api.js"></script>
+<script src="js/ticket-details.js"></script>
+
+</body>
+</html>

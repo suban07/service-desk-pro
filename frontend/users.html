@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Management</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+    <h1>ServiceDesk Pro</h1>
+</header>
+
+<nav>
+    <a href="index.html">Dashboard</a>
+    <a href="users.html">Users</a>
+    <a href="tickets.html">Tickets</a>
+    <a href="ticket-details.html">Ticket Details</a>
+</nav>
+
+<h2 style="text-align:center; margin-top:20px;">User Management</h2>
+
+<form id="userForm">
+    <h3>Create User</h3>
+
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+
+    <select id="role">
+        <option value="" selected disabled>Select Role</option>
+        <option value="CUSTOMER">CUSTOMER</option>
+        <option value="SUPPORT_ENGINEER">SUPPORT_ENGINEER</option>
+        <option value="MANAGER">MANAGER</option>
+    </select>
+
+    <button type="submit" class="btn-success">Create User</button>
+</form>
+
+<div id="message"></div>
+
+<div class="action-panel">
+
+    <button class="btn-view" onclick="showAllUsers()">Get All Users</button>
+    <button class="btn-update" onclick="showUpdateForm()">Update User</button>
+    <button class="btn-delete" onclick="showDeleteForm()">Delete User</button>
+    <button class="btn-view" onclick="showUserByIdForm()">Get User By ID</button>
+
+</div>
+
+
+<div id="contentArea"></div>
+
+<script src="js/api.js"></script>
+<script src="js/users.js"></script>
+
+</body>
+</html>

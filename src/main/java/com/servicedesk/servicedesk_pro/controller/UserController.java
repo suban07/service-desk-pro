@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
@@ -37,7 +38,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public UserResponse updateUser(@PathVariable Long userId,
-                                   @RequestBody UpdateUserRequest request) {
+                                   @Valid @RequestBody UpdateUserRequest request) {
         return userService.updateUser(userId, request);
     }
 

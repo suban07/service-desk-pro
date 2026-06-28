@@ -36,6 +36,14 @@ public class ResolutionService {
         User user = userRepository.findById(request.resolvedById())
                 .orElseThrow(()->new UserNotFoundException("User Not Found"));
 
+        if(resolutionRepository.findByTicketId(ticketId).isPresent()){
+            throw new RuntimeException(
+                    "Resolution already exists for this ticket");
+        }
+
+        if(ticket.getStatus().equals(TicketStatus.CLOSED)){
+            throw new RuntimeException("Cannot resolve ticket because it is already closed");
+        }
         if(user.getRole() != UserRole.SUPPORT_ENGINEER){
             throw new RuntimeException("Resolved by only SUPPORT_ENGINEER");
         }
@@ -44,6 +52,12 @@ public class ResolutionService {
                 !ticket.getAssignedTo().getId().equals(user.getId())) {
             throw new RuntimeException("Only assigned engineer can resolve this ticket");
         }
+
+        if(ticket.getStatus() !=TicketStatus.ASSIGNED && ticket.getStatus() !=TicketStatus.IN_PROGRESS){
+            throw new RuntimeException("Only ASSIGNED or IN_PROGRESS tickets can be resolved");
+        }
+
+
 
         Resolution resolution = new Resolution();
         resolution.setTicket(ticket);

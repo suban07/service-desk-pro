@@ -2,6 +2,7 @@ package com.servicedesk.servicedesk_pro.service;
 
 import com.servicedesk.servicedesk_pro.dto.CommentResponse;
 import com.servicedesk.servicedesk_pro.dto.CreateCommentRequest;
+import com.servicedesk.servicedesk_pro.enums.TicketStatus;
 import com.servicedesk.servicedesk_pro.exception.TicketNotFoundException;
 import com.servicedesk.servicedesk_pro.exception.UserNotFoundException;
 import com.servicedesk.servicedesk_pro.model.Comment;
@@ -32,6 +33,27 @@ public class CommentService {
 
         User commentedBy = userRepository.findById(request.commentedById())
                 .orElseThrow(()->new UserNotFoundException("User Not Found"));
+
+        if(ticket.getStatus() != TicketStatus.ASSIGNED &&
+                ticket.getStatus() != TicketStatus.IN_PROGRESS) {
+            throw new RuntimeException(
+                    "Comments can only be added to assigned or in-progress tickets");
+        }
+
+        if(!commentedBy.getId().equals(ticket.getAssignedTo().getId())
+                &&
+                !commentedBy.getId().equals(ticket.getCreatedBy().getId())) {
+
+            throw new RuntimeException(
+                    "Only the assigned engineer or the customer who created the ticket can add comments");
+        }
+
+        if(ticket.getStatus().equals(TicketStatus.RESOLVED)){
+            throw new RuntimeException("Cannot add comments because the ticket is already resolved");
+        }
+        if(ticket.getStatus().equals(TicketStatus.CLOSED)){
+            throw new RuntimeException("Cannot add comments because the ticket is closed");
+        }
 
         Comment comment = new Comment();
         comment.setCommentedBy(commentedBy);

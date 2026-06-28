@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tickets")
+@CrossOrigin(origins = "*")
 public class TicketController {
 
     private final TicketService ticketService;
@@ -98,8 +99,4 @@ public class TicketController {
                 page, size, sortBy, direction);
     }
 
-    @DeleteMapping("/{ticketId}")
-    public String deleteTicket(@PathVariable Long ticketId) {
-        return ticketService.deleteTicket(ticketId);
-    }
 }
